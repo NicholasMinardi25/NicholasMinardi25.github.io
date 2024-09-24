@@ -1,1 +1,12 @@
-
+</html>
+   <head>
+		<title> Starter Page </title>
+   </head>
+            <h1> Welcome to Nicks Cool Epic Adventurist World </h1>
+   <br/>
+	<h2> Some Things About Me: </h2>
+	<ul>
+		<li> I love dogs</li>
+		<li> I enjoy socializing</li>
+		<li> I procrastinate a lot</li>
+	</ul>
