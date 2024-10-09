@@ -17,8 +17,8 @@
         let quantity = prompt("What is the total amount of " + item + "(s) you are looking to buy? ");
 
         if(quantity > 99){
-            document.write("We don't have " + quantity + " " + item + "(s) in stock, we only have 99 " + item + "(s) in stock.");
-        }
+            document.write("We don't have " + quantity + " " + item + "(s) in stock, we only have 99 " + item + "(s) in stock. Sorry.");
+        }else{
         
         now = new Date();
         hour = now.getHours();
@@ -37,6 +37,7 @@
     
         document.writeln(" <h3> You ordered " + quantity + " of " + item + "(s).")
         document.write(" <h3> Your items will arrive on " + arrivalDate);
+        }
       </script>
   </body>
 </html>
