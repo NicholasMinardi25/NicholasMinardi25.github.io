@@ -1,3 +1,104 @@
-<DOCTYPE! html>
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Learn some interesting Cat Facts</title>
+        <style>
+            body {
+                font-family: 'Times New Roman', Times, serif, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 0;
+                padding: 20px;
+            }
+            img {
+                width: 300px;
+                height: auto;
+                margin: 20px 0;
+                border-radius: 8px;
+                align-items: center;
+            }
+            table {
+                width: 100%;
+                max-width: 500px;
+                border-collapse: collapse;
+                margin-top: 10px;
+                background-color: #fdfdfd;
+            }
+            th, td {
+                padding: 10px;
+                border: 1px solid #100e0e;
+                text-align: left;
+            }
+            th {
+                background-color: #a900f27d;
+                color: #fff;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 16px;
+                color: #000000;
+                background-color: #007bff;
+                border: none;
+                cursor: pointer;
+            }
+            .table-container {
+                max-width: 500px;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <h1> Click the button down below to gain some knowledge about cats! </h1>
+
+        <img Id = "catImage" src = "cat.jpg" alt = "cat">
+        <button onclick ="fetchCatFact()" >Cat Facts</button>
+
+        <div class = "table-container">
+            <table id = "factTable">
+                <tr>
+                    <th> Fact Id </th>
+                    <th> Fact </th>
+                </tr>
+            </table>
+        </div>
+
+        <script>
+    const url = "https://brianobruno.github.io/cats.json";
+    const options = {method: 'GET'};
+
+    async function fetchCatFact(){
+  const response = await fetch(url, options);
+  const result = await response.text();
+
+  const data = JSON.parse(result);
+  const organizedFacts = data.facts.sort((a,b)=>a.factId-b.factId);
+
+  const table= document.getElementById('factTable')
+  table.innerHTML = `<tr>
+    <th> Fact ID </th>
+    <th> Fact </th>
+    </tr>`;
+
+  organizedFacts.forEach(fact=> {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>
+            ${fact.factId}
+        </td>
+        <td>
+            ${fact.text}
+        </td>`;
+    table.appendChild(row);
+  });
+
+  document.getElementById('catImage').src = data.catPhoto;
+}
+        </script>
+    </body>
+</html>
+
   
   
