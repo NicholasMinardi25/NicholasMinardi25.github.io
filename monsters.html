@@ -48,6 +48,16 @@ button {
 .navbar a:hover {
   color: #ffcc00;
 }
+.card-body {
+  background-color: #B92B27;
+  color: #FFFFFF;
+  padding: 15px;
+  border-radius: 8px;
+}
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
 
 
 </style>
@@ -69,6 +79,9 @@ button {
                 <li class="nav-item">
                   <a class = "nav-link" href="spells.html">Spells</a>
                 </li>
+                <li class="nav-item"></li>
+                    <a class = "nav-link" href="final.about.html">About</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -80,7 +93,7 @@ button {
     <ul>
         <li> Dragon </li>
         <li> Golem </li>
-        <li> Skeleton </li>
+        <li> Giant </li>
     </ul> 
     <div class = "mb-4">
         <input 
@@ -104,8 +117,8 @@ function fetchMonsterList() {
 
   monsterDetailsDiv.innerHTML = ""; 
   if (!searchInput.trim()) {
-  monsterListDiv.innerHTML = "Please enter a monster name.";
-  return;
+    monsterListDiv.innerHTML = "Please enter a monster name.";
+    return;
 }
 
   monsterListDiv.innerHTML = "Loading monsters...";
@@ -114,33 +127,41 @@ function fetchMonsterList() {
     .then((response) => response.json())
     .then((data) => {
         const monsters = data.results;
+        const filteredMonsters = []; 
+            for (let i = 0; i < monsters.length; i++) {
+            if (monsters[i].name.toLowerCase().includes(searchInput)) {
+                filteredMonsters.push(monsters[i]);
+            }
+        }
 
-        const filteredMonsters = monsters.filter((monster) => 
-            monster.name.toLowerCase().includes(searchInput)
-    );
+    ;
 
     if (filteredMonsters.length > 0) {
-        monsterListDiv.innerHTML = filteredMonsters
-        .map(
-            (monster) => `
+        monsterListDiv.innerHTML = "";
+        for (let i = 0; i < filteredMonsters.length; i++) {
+                const monster = filteredMonsters[i];
+                const monsterCard = `
                 <div class="col-md-4 mb-3">
                     <div class="card">
                         <div class="card-body">
                         <h5 class="card-title">${monster.name}</h5>
                         <button class ="btn btn-outline-primary btn-sm" onclick="fetchMonsterDetails('${monster.index}')">
-                      View Details
-                  </button>
-              </div>
-          </div>
+                        View Details
+                    </button>
+                </div>
+            </div>
       </div>
-  `
-            )
-            .join("");
+    `;
+            monsterListDiv.innerHTML += monsterCard;
+     }
     } else {
         monsterListDiv.innerHTML = "No Monster Found! Please try again!";
     }
- })
-
+})
+    .catch((error) => {
+        monsterListDiv.innerHTML = "Error loading monsters. Please try again.";
+        console.error(error);
+    });
 }
 
 function fetchMonsterDetails(index) {
@@ -161,12 +182,7 @@ function fetchMonsterDetails(index) {
                         <p><strong>Hit Points: </strong>${monster.hit_points}</p>
                         <p><strong>Actions: </strong></p>
                         <ul>
-                            ${monster.actions
-                                .map(
-                                    (action) =>
-                                        `<li><strong>${action.name}: </strong>${action.desc}</li>`
-                                )
-                                .join("")}
+                            ${generateActlist(monster.actions)}
                             </ul>
                         </div>
                     </div>
@@ -176,5 +192,20 @@ function fetchMonsterDetails(index) {
     monsterListDiv.innerHTML = "Error loading monsters. Please try again.";
     console.error(error);
 });
+
+function generateActlist(actions) {
+    if (!actions || actions.length == 0) {
+        return "no action here";
+    }
+    let actionlistHTML = "";
+    for (let i = 0; i < actions.length; i++) {
+        const action = actions[i];
+        actionlistHTML += `<li><strong>${action.name}: </strong>${action.desc}</li>`;
+    }
+    return actionlistHTML;
+
+}
         }
 </script>
+</body>
+</html>
