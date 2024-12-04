@@ -17,8 +17,13 @@ body {
   font-family: 'MedievalSharp';
   font-size: 22px;
   color: #000000;
-  background-image: url(dragons.dnd.png);
+  background-image: url(dnd.spells.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
 }
+
 button {
     background-color: #B92B27;
     color: #f3efef;
@@ -99,7 +104,6 @@ button {
     <div id="spellList" class="row"></div>
     <div id="spellDetails" class="mt-4"></div>
 </div>
-
 <script>
     function fetchSpellList() {
         const searchInput = document.getElementById("searchInput").value.toLowerCase();
