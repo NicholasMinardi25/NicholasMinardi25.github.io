@@ -1,1 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Final Project</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link href='https://fonts.googleapis.com/css?family=MedievalSharp' rel='stylesheet'>
+</head>
+<style>
+body {
+  font-family: 'MedievalSharp';
+  font-size: 22px;
+  color: #000000;
+  background-image: url(dragons.dnd.png);
+}
+button {
+    background-color: #B92B27;
+    color: #f3efef;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 10px;
+  background-color: #B92B27 !important;
+  color: #FFFFFF; 
+  font-size: 18px;
+}
 
+.navbar-left, .navbar-right {
+  display: flex;
+  gap: 70px;
+}
+
+.navbar a {
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  font-family: 'MedievalSharp';
+  transition: color 0.3s;
+}
+
+.navbar a:hover {
+  color: #ffcc00;
+}
+.card-body {
+  background-color: #B92B27;
+  color: #FFFFFF;
+  padding: 15px;
+  border-radius: 8px;
+}
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+
+</style>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Spells</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="Final.html">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class = "nav-link" href="monsters.html">Monsters</a>
+                </li>
+                <li class="nav-item">
+                  <a class = "nav-link" href="spells.html">Spells</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+  </nav>  
+  <div class ="container"></div>
+  <h1 class = "text-center mb-4">Spells Viewer</h1>
+  <p><center>Down Below, you will see a bar where you input the spells you want to check out & it's stats.</center></p>
+  <p><center>Some examples are: </center></p>
+  <ul>
+      <li> Acid-Arrow </li>
+      <li> Acid-Splash </li>
+      <li> Alter-Self </li>
+  </ul>  
+    <div class = "mb-4">
+        <input type="text" id="searchInput" class="form-control" placeholder="Enter Spell Name Here.">
+        <button class="btn btn-primary mt-2" onclick="fetchSpellList()">Search Spells</button>
+    </div>
+    <div id="spellList" class="row"></div>
+    <div id="spellDetails" class="mt-4"></div>
+</div>
+
+<script>
+    function fetchSpellList() {
+        const searchInput = document.getElementById("searchInput").value.toLowerCase();
+        const spellListDiv = document.getElementById("spellList");
+        const spellDetailsDiv = document.getElementById("spellDetails");
+
+        spellDetailsDiv.innerHTML = "";
+
+        if (!searchInput.trim()) {
+            spellListDiv.innerHTML = "Please enter a spell name.";
+            return;
+        }
+
+        spellListDiv.innerHTML = "Loading...";
+
+        fetch("https://www.dnd5eapi.co/api/spells") 
+            .then((response) => response.json())
+            .then((data) => {
+                const spells = data.results;
+                let spellHTML = "";
+                for (let i = 0; i < spells.length; i++){
+                    if (spells[i].name.toLowerCase().includes(searchInput)){
+                        spellHTML += ` 
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${spells[i].name}</h5>
+                                        <button class="btn btn-outline-primary btn-sm" onclick="fetchSpellDetails('${spells[i].index}')">
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                    }
+                }
+            spellListDiv.innerHTML = spellHTML || "No spells found.";
+         })
+            .catch((error) => {
+        spellListDiv.innerHTML = "Error loading spells.";
+        console.error(error);
+    });
+}
+function fetchSpellDetails(index) {
+    const spellDetailsDiv = document.getElementById("spellDetails");
+    spellDetailsDiv.innerHTML = "Loading...";
+
+    fetch(`https://www.dnd5eapi.co/api/spells/${index}`)
+        .then((response) => response.json())
+        .then((spell) => { 
+            let componentsText = "";
+            if (spell.components && spell.components.length > 0) {
+                componentsText = spell.components.join(", ");
+            } else {
+                componentsText = "None";
+            }
+
+            let higherLevelText = "";
+            if (spell.higher_level) {
+                higherLevelText = spell.higher_level.join(" ");
+            }
+
+            let descriptionText = spell.desc.join(" "); // Simplified description handling
+
+            spellDetailsDiv.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <h3>${spell.name}</h3>
+                        <p><strong>Level: </strong>${spell.level}</p>
+                        <p><strong>School: </strong>${spell.school}</p>
+                        <p><strong>Casting Time: </strong>${spell.casting_time}</p>
+                        <p><strong>Range: </strong>${spell.range}</p>
+                        <p><strong>Components: </strong>${componentsText}</p>
+                        <p><strong>Duration: </strong>${spell.duration}</p>
+                        <p><strong>Description: </strong>${descriptionText}</p>
+                        ${higherLevelText ? `<p><strong>At Higher Levels:</strong> ${higherLevelText}</p>` : ""}
+                    </div>
+                </div>`;
+        })
+        .catch((error) => {
+            spellDetailsDiv.innerHTML = "Error loading spell details.";
+            console.error(error);
+        });
+}
+</script>
+</body>
+</html>
